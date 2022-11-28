@@ -119,33 +119,164 @@ function fromJSON(proto, json) {
  *  For more examples see unit tests.
  */
 
+class MySuperBaseElementSelector {
+  constructor() {
+    this.selector = [];
+    this.elements = [];
+    this.ids = [];
+    this.pseudoElements = [];
+    this.arranging = [];
+  }
+
+  element(value) {
+    if (!this.elements.length) {
+      this.selector.push(`${value}`);
+      this.elements.push(`${value}`);
+      this.arranging.push('element');
+    } else {
+      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    }
+    if (this.arranging.length > 1 && this.arranging[this.arranging.length - 2] !== 'element') {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    return this;
+  }
+
+  id(value) {
+    if (!this.ids.length) {
+      this.selector.push(`#${value}`);
+      this.ids.push(`#${value}`);
+      this.arranging.push('id');
+    } else {
+      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    }
+    if (this.arranging.length > 1 && this.arranging[this.arranging.length - 2] !== 'element') {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    return this;
+  }
+
+  class(value) {
+    this.selector.push(`.${value}`);
+    this.arranging.push('class');
+    if (this.arranging.length > 1
+    && this.arranging[this.arranging.length - 2] !== 'element'
+    && this.arranging[this.arranging.length - 2] !== 'id'
+    && this.arranging[this.arranging.length - 2] !== 'class') {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    return this;
+  }
+
+  attr(value) {
+    this.selector.push(`[${value}]`);
+    this.arranging.push('attr');
+    if (this.arranging.length > 1
+    && this.arranging[this.arranging.length - 2] !== 'element'
+    && this.arranging[this.arranging.length - 2] !== 'id'
+    && this.arranging[this.arranging.length - 2] !== 'class'
+    && this.arranging[this.arranging.length - 2] !== 'attr') {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    return this;
+  }
+
+  pseudoClass(value) {
+    this.selector.push(`:${value}`);
+    this.arranging.push('pseudoClass');
+    if (this.arranging.length > 1
+    && this.arranging[this.arranging.length - 2] !== 'element'
+    && this.arranging[this.arranging.length - 2] !== 'id'
+    && this.arranging[this.arranging.length - 2] !== 'class'
+    && this.arranging[this.arranging.length - 2] !== 'attr'
+    && this.arranging[this.arranging.length - 2] !== 'pseudoClass') {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    return this;
+  }
+
+  pseudoElement(value) {
+    if (!this.pseudoElements.length) {
+      this.selector.push(`::${value}`);
+      this.pseudoElements.push(`::${value}`);
+      this.arranging.push('pseudoElement');
+    } else {
+      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    }
+    if (this.arranging.length > 1
+    && this.arranging[this.arranging.length - 2] !== 'element'
+    && this.arranging[this.arranging.length - 2] !== 'id'
+    && this.arranging[this.arranging.length - 2] !== 'class'
+    && this.arranging[this.arranging.length - 2] !== 'attr'
+    && this.arranging[this.arranging.length - 2] !== 'pseudoClass') {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    return this;
+  }
+
+  combine(selector1, combinator, selector2) {
+    this.selector = [...selector1.selector, ' ', combinator, ' ', ...selector2.selector];
+    return this;
+  }
+
+  stringify() {
+    return this.selector.join('');
+  }
+}
+
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+
+  element(value) {
+    // throw new Error('Not implemented');
+    const newBuilder = new MySuperBaseElementSelector();
+    newBuilder.element(value);
+    return newBuilder;
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    // throw new Error('Not implemented');
+    const newBuilder = new MySuperBaseElementSelector();
+    newBuilder.id(value);
+    return newBuilder;
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    // throw new Error('Not implemented');
+    const newBuilder = new MySuperBaseElementSelector();
+    newBuilder.class(value);
+    return newBuilder;
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    // throw new Error('Not implemented');
+    const newBuilder = new MySuperBaseElementSelector();
+    newBuilder.attr(value);
+    return newBuilder;
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    // throw new Error('Not implemented');
+    const newBuilder = new MySuperBaseElementSelector();
+    newBuilder.pseudoClass(value);
+    return newBuilder;
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    // throw new Error('Not implemented');
+    const newBuilder = new MySuperBaseElementSelector();
+    newBuilder.pseudoElement(value);
+    return newBuilder;
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  combine(selector1, combinator, selector2) {
+    // throw new Error('Not implemented');
+    const combineBuilder = new MySuperBaseElementSelector();
+    combineBuilder.combine(selector1, combinator, selector2);
+    return combineBuilder;
+  },
+
+  stringify() {
+    this.stringify();
   },
 };
 
